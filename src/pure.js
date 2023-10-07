@@ -5,7 +5,7 @@ import {
   getQueriesForElement,
   prettyDOM,
   configure as configureDTL,
-  getConfig,
+  getConfig as getConfigDTL,
 } from '@testing-library/dom'
 import act, {
   getIsReactActEnvironment,
@@ -70,13 +70,19 @@ let configForRTL = {
   reactStrictMode: false,
 }
 
+function getConfig() {
+  return {
+    ...getConfigDTL(),
+    ...configForRTL,
+  }
+}
+
 function configure(newConfig) {
   if (typeof newConfig === 'function') {
     // Pass the existing config out to the provided function
     // and accept a delta in return
     newConfig = newConfig({
       ...getConfig(),
-      ...configForRTL,
     })
   }
 
@@ -301,6 +307,6 @@ function renderHook(renderCallback, options = {}) {
 
 // just re-export everything from dom-testing-library
 export * from '@testing-library/dom'
-export {render, renderHook, cleanup, act, fireEvent, configure}
+export {render, renderHook, cleanup, act, fireEvent, configure, getConfig}
 
 /* eslint func-name-matching:0 */
