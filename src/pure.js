@@ -5,6 +5,7 @@ import {
   getQueriesForElement,
   prettyDOM,
   configure as configureDTL,
+  getConfig,
 } from '@testing-library/dom'
 import act, {
   getIsReactActEnvironment,
@@ -64,6 +65,30 @@ configureDTL({
     return result
   },
 })
+
+let configForRTL = {
+  reactStrictMode: false,
+}
+
+function configure(newConfig) {
+  if (typeof newConfig === 'function') {
+    // Pass the existing config out to the provided function
+    // and accept a delta in return
+    newConfig = newConfig({
+      ...getConfig(),
+      ...configForRTL,
+    })
+  }
+
+  const {reactStrictMode, ...configForDTL} = newConfig
+
+  configureDTL(configForDTL)
+
+  configForRTL = {
+    ...configForRTL,
+    reactStrictMode,
+  }
+}
 
 // Ideally we'd just use a WeakMap where containers are keys and roots are values.
 // We use two variables so that we can bail out in constant time when we render with a new container (most common use case)
@@ -276,6 +301,6 @@ function renderHook(renderCallback, options = {}) {
 
 // just re-export everything from dom-testing-library
 export * from '@testing-library/dom'
-export {render, renderHook, cleanup, act, fireEvent}
+export {render, renderHook, cleanup, act, fireEvent, configure}
 
 /* eslint func-name-matching:0 */
