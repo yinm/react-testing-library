@@ -62,6 +62,23 @@ export function testFireEvent() {
   fireEvent.click(container)
 }
 
+export function testConfigure() {
+  pure.configure({testIdAttribute: 'foobar'})
+  pure.configure(existingConfig => ({
+    testIdAttribute: `modified-${existingConfig.testIdAttribute}`,
+  }))
+
+  pure.configure({reactStrictMode: false})
+  pure.configure(existingConfig => ({
+    reactStrictMode: !existingConfig.reactStrictMode,
+  }))
+}
+
+export function testGetConfig() {
+  pure.getConfig().testIdAttribute
+  pure.getConfig().reactStrictMode
+}
+
 export function testDebug() {
   const {debug, getAllByTestId} = render(
     <>
