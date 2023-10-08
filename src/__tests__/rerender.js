@@ -78,7 +78,7 @@ test('re-renders twice when reactStrictMode is true', () => {
   const {rerender} = render(<Component />)
   expect(spy).toHaveBeenCalledTimes(2)
 
-  spy.mockReset()
+  spy.mockClear()
   rerender(<Component />)
   expect(spy).toHaveBeenCalledTimes(2)
 
