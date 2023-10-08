@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
-import {fireEvent, render, screen} from '../'
+import {fireEvent, render, screen, configure} from '../'
 
 test('renders div into document', () => {
   const ref = React.createRef()
@@ -87,6 +87,47 @@ test('renders options.wrapper around node', () => {
       />
     </div>
   `)
+})
+
+test('renders options.wrapper around node when reactStrictMode is true', () => {
+  configure({reactStrictMode: true})
+
+  const WrapperComponent = ({children}) => (
+    <div data-testid="wrapper">{children}</div>
+  )
+  const {container} = render(<div data-testid="inner" />, {
+    wrapper: WrapperComponent,
+  })
+
+  expect(screen.getByTestId('wrapper')).toBeInTheDocument()
+  expect(container.firstChild).toMatchInlineSnapshot(`
+    <div
+      data-testid=wrapper
+    >
+      <div
+        data-testid=inner
+      />
+    </div>
+  `)
+
+  // reset for other tests
+  configure({reactStrictMode: false})
+})
+
+test('renders twice when reactStrictMode is true', () => {
+  configure({reactStrictMode: true})
+
+  const spy = jest.fn()
+  function Component() {
+    spy()
+    return null
+  }
+
+  render(<Component />)
+  expect(spy).toHaveBeenCalledTimes(2)
+
+  // reset for other tests
+  configure({reactStrictMode: false})
 })
 
 test('flushes useEffect cleanup functions sync on unmount()', () => {
