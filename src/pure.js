@@ -81,9 +81,7 @@ function configure(newConfig) {
   if (typeof newConfig === 'function') {
     // Pass the existing config out to the provided function
     // and accept a delta in return
-    newConfig = newConfig({
-      ...getConfig(),
-    })
+    newConfig = newConfig(getConfig())
   }
 
   const {reactStrictMode, ...configForDTL} = newConfig
